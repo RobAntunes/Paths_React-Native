@@ -86,19 +86,26 @@ const SignUp = ({navigation}: {navigation: any}) => {
           onSubmit={(values: any, {setSubmitting}: FormikHelpers<any>) => {
             (async () => {
               try {
-                const user = await supabase.auth.signUp({
+                const {
+                  data: {user},
+                } = await supabase.auth.signUp({
                   email: values.Email,
                   password: values.Password,
                   options: {
                     data: {
-                      first_name: values['First Name'],
-                      last_name: values['Last Name'],
+                      first_name:
+                        values['First Name'][0].toUpperCase +
+                        values['First Name'].slice(1),
+                      last_name:
+                        values['Last Name'][0].toUpperCase +
+                        values['Last Name'].slice(1),
                       username: values.Username,
                       created_at: new Date(),
                       updated_at: new Date(),
                     },
                   },
                 });
+                console.log(user);
                 if (user) {
                   navigation.navigate('VerifyEmail', {
                     email: values.Email,
@@ -195,7 +202,7 @@ const SignUp = ({navigation}: {navigation: any}) => {
                       onChangeText={handleChange('Password')}
                       onBlur={handleBlur('Password')}
                       value={values.Password}
-                      textContentType="none"
+                      textContentType="oneTimeCode"
                       keyboardType="default"
                       blurOnSubmit={false}
                     />
